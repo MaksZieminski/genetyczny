@@ -8,6 +8,9 @@ namespace Genetyczny.Model
 {
     class Solution
     {
+        private static readonly Random random = new Random();
+        private static readonly object syncLock = new object();
+       
         List<KeyValuePair<int, int>> allocation = new List<KeyValuePair<int, int>>();
 
 
@@ -24,14 +27,13 @@ namespace Genetyczny.Model
             int row;
             for (int i = 0; i < nodesCount; i++)
             {
-                Random rnd = new Random();
                 do
                 {
-                    row = rnd.Next(nodesCount+1);
-                    column = rnd.Next(row+1);
+                    row = RandomNumber(0, nodesCount+1);
+                    column = RandomNumber(0,row+1);
                     
                 }
-                while (column!=row && !allocation.Contains(new KeyValuePair<int, int>(column, row)));
+                while (column==row && !allocation.Contains(new KeyValuePair<int, int>(column, row)));
                 
                 allocation.Add(new KeyValuePair<int, int>(column,row));
             }
@@ -50,6 +52,14 @@ namespace Genetyczny.Model
             foreach (KeyValuePair<int, int> pair in allocation)
             {
                 Console.WriteLine(pair.Key.ToString() + "-" + pair.Value.ToString());
+            }
+        }
+
+        public static int RandomNumber(int min, int max)
+        {
+            lock (syncLock)
+            { // synchronize
+                return random.Next(min, max);
             }
         }
     }
