@@ -14,16 +14,17 @@ namespace Genetyczny
         public static readonly int populationCount = 100;
         public static int[,] flowMatrix = null;
         public static int[,] distanceMatrix = null;
+        public static int rowsCount = 0;
         
         
-
         static void Main(string[] args)
         {
-            Population population = new Population(populationCount);
-            ReadInput();
             
-            Console.WriteLine("Macierz przeplywu");
-            Console.WriteLine("Macierz odleglosci");
+            ReadInput();
+            Population population = new Population(populationCount);
+            population.PrintSolutions();
+            
+
             Boolean breakpoint = true;
             
         }
@@ -63,6 +64,7 @@ namespace Genetyczny
         public static void InitializeMatrix(List<string> list)
         {
             int length = int.Parse(list.ElementAt(0));
+            rowsCount = length;
             list.RemoveAt(0);
            
             distanceMatrix = new int[length, length];

@@ -10,7 +10,7 @@ namespace Genetyczny.Model
     {
 
         #region fields
-        private List<Solution> solutions = new List<Solution>();
+        public List<Solution> solutions = new List<Solution>();
         int populationCount = 0;
         #endregion
 
@@ -26,18 +26,30 @@ namespace Genetyczny.Model
         {
             return populationCount;
         }
+
         public void Initialize(int populationCount)
         {
+            this.populationCount = populationCount;
+
             for (int i = 0; i < populationCount; i++)
             {
                 solutions.Add(new Solution(populationCount));
             }
         }
 
-
         //public int AverageSolution() { }
         //public int BestSolution() { }
         //public int WorstSolution() { }
+
+        public void PrintSolutions()
+        {
+            foreach (Solution solution in solutions)
+            {
+                solution.Print();
+                Console.WriteLine("");
+            }
+            
+        }
         
     }
 }

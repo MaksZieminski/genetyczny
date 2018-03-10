@@ -8,33 +8,32 @@ namespace Genetyczny.Model
 {
     class Solution
     {
-        int[,] flowMatrix = Simulation.flowMatrix;
-        int[,] distanceMatrix = Simulation.distanceMatrix;
-        Dictionary<int, int> allocation = new Dictionary<int, int>();
+        List<KeyValuePair<int, int>> allocation = new List<KeyValuePair<int, int>>();
 
 
         public Solution(int nodesCount)
         {
-            RandomAllocate(allocation);
+            RandomAllocate(Simulation.rowsCount);
         }
 
         //public int Estimate(Dictionary<int, char> allocation) {}
         //public Dictionary<int, char> Cross(Solution anotherSolution){}
-        public static void RandomAllocate(Dictionary<int, int> allocation)
+        public void RandomAllocate(int nodesCount)
         {
             int column;
             int row;
-            for (int i = 0; i < allocation.Count; i++)
+            for (int i = 0; i < nodesCount; i++)
             {
                 Random rnd = new Random();
                 do
                 {
-                    column = rnd.Next(allocation.Count);
-                    row = rnd.Next(allocation.Count);
+                    row = rnd.Next(nodesCount+1);
+                    column = rnd.Next(row+1);
+                    
                 }
-                while (column==row && allocation.ContainsKey(column) && allocation.ContainsValue(row));
-
-                allocation.Add(column, row);
+                while (column!=row && !allocation.Contains(new KeyValuePair<int, int>(column, row)));
+                
+                allocation.Add(new KeyValuePair<int, int>(column,row));
             }
         }
 
@@ -45,6 +44,13 @@ namespace Genetyczny.Model
         public static bool IsPossibleDistance(int key, int value)
         {
             return Simulation.distanceMatrix[key, value] != 0;
+        }
+        public void Print()
+        {
+            foreach (KeyValuePair<int, int> pair in allocation)
+            {
+                Console.WriteLine(pair.Key.ToString() + "-" + pair.Value.ToString());
+            }
         }
     }
 }
