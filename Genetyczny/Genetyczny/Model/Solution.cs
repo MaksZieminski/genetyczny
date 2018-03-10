@@ -33,9 +33,9 @@ namespace Genetyczny.Model
                     column = RandomNumber(0,row+1);
                     
                 }
-                while (column==row && !allocation.Contains(new KeyValuePair<int, int>(column, row)));
+                while (column==row && !allocation.Contains(new KeyValuePair<int, int>(row, column)));
                 
-                allocation.Add(new KeyValuePair<int, int>(column,row));
+                allocation.Add(new KeyValuePair<int, int>(row,column));
             }
         }
 
@@ -43,12 +43,16 @@ namespace Genetyczny.Model
         {
             return Simulation.flowMatrix[key, value] != 0;
         }
+
         public static bool IsPossibleDistance(int key, int value)
         {
             return Simulation.distanceMatrix[key, value] != 0;
         }
+
         public void Print()
         {
+            int counter = 1;
+            Console.WriteLine("Rozwiazanie numer : " + counter);
             foreach (KeyValuePair<int, int> pair in allocation)
             {
                 Console.WriteLine(pair.Key.ToString() + "-" + pair.Value.ToString());
