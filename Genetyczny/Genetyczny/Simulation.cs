@@ -53,7 +53,7 @@ namespace Genetyczny
             int counter = 0;
             foreach (string element in list)
             {
-                Console.WriteLine("Nr elementu w liscie:"+counter+ ". : " +element);
+                Console.WriteLine("Nr elementu w liscie:" + counter + ". : " + element);
                 counter++;
             }
 
