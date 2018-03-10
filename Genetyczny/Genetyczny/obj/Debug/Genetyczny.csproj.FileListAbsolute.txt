@@ -12,3 +12,5 @@ X:\Genetyczny\Genetyczny\Genetyczny\obj\Debug\Genetyczny.csprojResolveAssemblyRe
 X:\Genetyczny\Genetyczny\Genetyczny\obj\Debug\Genetyczny.csproj.CoreCompileInputs.cache
 X:\Genetyczny\Genetyczny\Genetyczny\obj\Debug\Genetyczny.exe
 X:\Genetyczny\Genetyczny\Genetyczny\obj\Debug\Genetyczny.pdb
+X:\Genetyczny\Genetyczny\Genetyczny\bin\Debug\MathNet.Numerics.dll
+X:\Genetyczny\Genetyczny\Genetyczny\bin\Debug\MathNet.Numerics.xml
