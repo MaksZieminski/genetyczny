@@ -28,6 +28,7 @@ namespace Genetyczny.Model
         }
         public void Initialize(int populationCount) { }
 
+
         //public int AverageSolution() { }
         //public int BestSolution() { }
         //public int WorstSolution() { }
