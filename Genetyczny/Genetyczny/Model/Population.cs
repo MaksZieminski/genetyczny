@@ -26,7 +26,13 @@ namespace Genetyczny.Model
         {
             return populationCount;
         }
-        public void Initialize(int populationCount) { }
+        public void Initialize(int populationCount)
+        {
+            for (int i = 0; i < populationCount; i++)
+            {
+                solutions.Add(new Solution(populationCount));
+            }
+        }
 
 
         //public int AverageSolution() { }
