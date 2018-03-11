@@ -8,19 +8,27 @@ namespace Genetyczny.Model
 {
     class Solution
     {
+        #region Fields
         private static readonly Random random = new Random();
         private static readonly object syncLock = new object();
-       
+
         List<KeyValuePair<int, int>> allocation = new List<KeyValuePair<int, int>>();
+        int estimatedScore = 0;
 
-
+        #endregion
+       
+        #region Constructors
         public Solution(int nodesCount)
         {
             RandomAllocate(Simulation.rowsCount);
+            estimatedScore = EstimateScore();
+
         }
 
-        //public int Estimate(Dictionary<int, char> allocation) {}
-        //public Dictionary<int, char> Cross(Solution anotherSolution){}
+        public Solution() { }
+        #endregion
+
+        
         public void RandomAllocate(int nodesCount)
         {
             int column;
@@ -29,13 +37,13 @@ namespace Genetyczny.Model
             {
                 do
                 {
-                    row = RandomNumber(0, nodesCount+1);
-                    column = RandomNumber(0,row+1);
-                    
+                    row = RandomNumber(0, nodesCount);
+                    column = RandomNumber(0, row);
+
                 }
-                while (column==row && !allocation.Contains(new KeyValuePair<int, int>(row, column)));
-                
-                allocation.Add(new KeyValuePair<int, int>(row,column));
+                while (column == row || allocation.Contains(new KeyValuePair<int, int>(row, column)) || !IsPossibleFlow(row, column) || !IsPossibleDistance(row, column));
+
+                allocation.Add(new KeyValuePair<int, int>(row, column));
             }
         }
 
@@ -51,8 +59,6 @@ namespace Genetyczny.Model
 
         public void Print()
         {
-            int counter = 1;
-            Console.WriteLine("Rozwiazanie numer : " + counter);
             foreach (KeyValuePair<int, int> pair in allocation)
             {
                 Console.WriteLine(pair.Key.ToString() + "-" + pair.Value.ToString());
@@ -66,5 +72,22 @@ namespace Genetyczny.Model
                 return random.Next(min, max);
             }
         }
+
+        public int EstimateScore()
+        {
+            int points = 0;
+
+            foreach (KeyValuePair<int, int> pair in allocation)
+            {
+                points += Simulation.GetValueFromFlowMatrix(pair.Key, pair.Value) * Simulation.GetValueFromDistanceMatrix(pair.Key, pair.Value);
+            }
+            return points;
+        }
+
+        public int GetEstimatedScore()
+        {
+            return estimatedScore;
+        }
+
     }
 }

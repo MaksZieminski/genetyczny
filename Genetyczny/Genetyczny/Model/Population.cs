@@ -36,17 +36,53 @@ namespace Genetyczny.Model
                 solutions.Add(new Solution(populationCount));
             }
         }
+        
+        public double AverageSolution()
+        {
+            double averageScore = 0;
+            int count = solutions.Count;
+            foreach (Solution solution in solutions)
+            {
+                averageScore += solution.GetEstimatedScore();
+            }
+            return averageScore / count;
+        }
 
-        //public int AverageSolution() { }
-        //public int BestSolution() { }
-        //public int WorstSolution() { }
+        public int WorstSolutionScore()
+        {
+            int score = 0;
+            foreach (Solution solution in solutions)
+            {
+                if (score < solution.GetEstimatedScore())
+                {
+                    score = solution.GetEstimatedScore();
+                }
+            }
+            return score;
+        }
+
+        public int BestSolutionScore()
+        {
+            int score = int.MaxValue;
+            foreach (Solution solution in solutions)
+            {
+                if (score > solution.GetEstimatedScore())
+                {
+                    score = solution.GetEstimatedScore();
+                }
+            }
+            return score;
+        }
 
         public void PrintSolutions()
         {
+            int counter = 1;
             foreach (Solution solution in solutions)
             {
+                Console.WriteLine("Solution[" + counter + "]. Score : " + solution.GetEstimatedScore());
                 solution.Print();
                 Console.WriteLine("");
+                counter++;
             }
             
         }

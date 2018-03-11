@@ -17,6 +17,7 @@ namespace Genetyczny
         public static int rowsCount = 0;
         
         
+        
         static void Main(string[] args)
         {
             
@@ -24,7 +25,10 @@ namespace Genetyczny
             Population population = new Population(populationCount);
             population.PrintSolutions();
             
-
+            Console.WriteLine("Best solution score : " + population.BestSolutionScore());
+            Console.WriteLine("Worst solution score : " + population.WorstSolutionScore());
+            Console.WriteLine("Average solution score : " + population.AverageSolution());
+            
             Boolean breakpoint = true;
             
         }
@@ -39,7 +43,6 @@ namespace Genetyczny
                     var parts = line.Split('\n').ToList<string>();
                     InitializeMatrix(parts);
                 }
-                
             }
             catch (Exception e)
             {
@@ -76,16 +79,15 @@ namespace Genetyczny
                 {
                     flowMatrix[column, row] = int.Parse(list.ElementAt(column).ElementAt(row).ToString());
                     distanceMatrix[column, row] = int.Parse(list.ElementAt(column+length).ElementAt(row).ToString());
-                    
                 }
             }
 
-            //DO USUNIECIA
-            Console.WriteLine("Macierz przeplywu");
-            printMatrix(flowMatrix, length);
-            Console.WriteLine("Macierz dystansu");
-            printMatrix(distanceMatrix, length);
-            //DO USUNIECIA
+            ////DO USUNIECIA
+            //Console.WriteLine("Macierz przeplywu");
+            //printMatrix(flowMatrix, length);
+            //Console.WriteLine("Macierz dystansu");
+            //printMatrix(distanceMatrix, length);
+            ////DO USUNIECIA
         }
 
         public static void printMatrix(int[,] matrix, int length)
@@ -98,6 +100,16 @@ namespace Genetyczny
                 }
                 Console.WriteLine();
             }
+        }
+
+        public static int GetValueFromFlowMatrix(int row, int column)
+        {
+            return flowMatrix[row, column];
+        }
+
+        public static int GetValueFromDistanceMatrix(int row, int column)
+        {
+            return distanceMatrix[row, column];
         }
 
     }
