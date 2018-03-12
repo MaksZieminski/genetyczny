@@ -79,7 +79,7 @@ namespace Genetyczny.Model
             int counter = 1;
             foreach (Solution solution in solutions)
             {
-                Console.WriteLine("Solution[" + counter + "]. Score : " + solution.GetEstimatedScore());
+               // Console.WriteLine("Solution[" + counter + "]. Score : " + solution.GetEstimatedScore());
                 solution.Print();
                 Console.WriteLine("");
                 counter++;

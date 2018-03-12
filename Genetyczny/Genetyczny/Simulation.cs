@@ -82,12 +82,12 @@ namespace Genetyczny
                 }
             }
 
-            ////DO USUNIECIA
-            //Console.WriteLine("Macierz przeplywu");
-            //printMatrix(flowMatrix, length);
-            //Console.WriteLine("Macierz dystansu");
-            //printMatrix(distanceMatrix, length);
-            ////DO USUNIECIA
+            //DO USUNIECIA
+            Console.WriteLine("Macierz przeplywu");
+            printMatrix(flowMatrix, length);
+            Console.WriteLine("Macierz dystansu");
+            printMatrix(distanceMatrix, length);
+            //DO USUNIECIA
         }
 
         public static void printMatrix(int[,] matrix, int length)
@@ -112,5 +112,6 @@ namespace Genetyczny
             return distanceMatrix[row, column];
         }
 
+       
     }
 }
