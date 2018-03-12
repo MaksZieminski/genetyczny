@@ -12,28 +12,35 @@ namespace Genetyczny
     {
 
         public static readonly int populationCount = 100;
-        public static int[,] flowMatrix = null;
-        public static int[,] distanceMatrix = null;
-        public static int rowsCount = 0;
-        
-        
+        public static int[,] flowMatrix;
+        public static int[,] distanceMatrix;
+        public static int matrixDimension = 0;
         
         static void Main(string[] args)
         {
             
-            ReadInput();
+            ParseMatrixFromFile();
             Population population = new Population(populationCount);
             population.PrintSolutions();
+            //population.Start();
             
             Console.WriteLine("Best solution score : " + population.BestSolutionScore());
             Console.WriteLine("Worst solution score : " + population.WorstSolutionScore());
             Console.WriteLine("Average solution score : " + population.AverageSolution());
-            
+
+            ////DO USUNIECIA
+            //Console.WriteLine("Macierz przeplywu");
+            //printMatrix(flowMatrix, length);
+            //Console.WriteLine("Macierz dystansu");
+            //printMatrix(distanceMatrix, length);
+            ////DO USUNIECIA
+
+
             Boolean breakpoint = true;
             
         }
 
-        public static void ReadInput()
+        public static void ParseMatrixFromFile()
         {
             try
             {
@@ -41,7 +48,7 @@ namespace Genetyczny
                 {
                     String line = sr.ReadToEnd().Replace("  ", "").Replace("<", "").Replace(">", "").Replace("\r","");
                     var parts = line.Split('\n').ToList<string>();
-                    InitializeMatrix(parts);
+                    FillMatrixes(parts);
                 }
             }
             catch (Exception e)
@@ -64,10 +71,10 @@ namespace Genetyczny
 
         }
 
-        public static void InitializeMatrix(List<string> list)
+        public static void FillMatrixes(List<string> list)
         {
             int length = int.Parse(list.ElementAt(0));
-            rowsCount = length;
+            matrixDimension = length;
             list.RemoveAt(0);
            
             distanceMatrix = new int[length, length];
@@ -81,13 +88,6 @@ namespace Genetyczny
                     distanceMatrix[column, row] = int.Parse(list.ElementAt(column+length).ElementAt(row).ToString());
                 }
             }
-
-            //DO USUNIECIA
-            Console.WriteLine("Macierz przeplywu");
-            printMatrix(flowMatrix, length);
-            Console.WriteLine("Macierz dystansu");
-            printMatrix(distanceMatrix, length);
-            //DO USUNIECIA
         }
 
         public static void printMatrix(int[,] matrix, int length)

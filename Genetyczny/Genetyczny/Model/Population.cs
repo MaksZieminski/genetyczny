@@ -12,6 +12,7 @@ namespace Genetyczny.Model
         #region fields
         public List<Solution> solutions = new List<Solution>();
         int populationCount = 0;
+        int generation = 0;
         #endregion
 
         #region Constructors
@@ -86,6 +87,14 @@ namespace Genetyczny.Model
             }
             
         }
-        
+
+        public void Start()
+        {
+            //select
+            //kross
+            //napraw
+            //mutuj
+
+        }
     }
 }

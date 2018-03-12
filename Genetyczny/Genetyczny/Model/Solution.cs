@@ -20,7 +20,7 @@ namespace Genetyczny.Model
         #region Constructors
         public Solution(int nodesCount)
         {
-            RandomAllocate(Simulation.rowsCount);
+            RandomAllocate(Simulation.matrixDimension);
             estimatedScore = EstimateScore();
         }
 
