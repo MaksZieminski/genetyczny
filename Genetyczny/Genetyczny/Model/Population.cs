@@ -18,7 +18,7 @@ namespace Genetyczny.Model
         #region Constructors
         public Population(int populationCount)
         {
-            Initialize(populationCount);
+            this.populationCount = populationCount;
         }
         #endregion
 
@@ -28,9 +28,8 @@ namespace Genetyczny.Model
             return populationCount;
         }
 
-        public void Initialize(int populationCount)
+        public void Initialize()
         {
-            this.populationCount = populationCount;
 
             for (int i = 0; i < populationCount; i++)
             {
@@ -88,13 +87,27 @@ namespace Genetyczny.Model
             
         }
 
+        public void Select(List<Solution> population) { }
+
         public void Start()
         {
-            //select
-            //kross
-            //napraw
-            //mutuj
 
+            Initialize();
+            while (true)
+            {
+                Select(solutions);
+                //Cross(solutions);
+                //Mute(solutions);
+                PrintPopulationInfo();
+            }
+
+        }
+
+        public void PrintPopulationInfo()
+        {
+            Console.WriteLine("Best solution score : " + BestSolutionScore());
+            Console.WriteLine("Worst solution score : " + WorstSolutionScore());
+            Console.WriteLine("Average solution score : " + AverageSolution());
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Genetyczny.Model
         public Solution(int nodesCount)
         {
             RandomAllocate(Simulation.matrixDimension);
-            estimatedScore = EstimateScore();
+            EstimateScore();
         }
 
         public Solution() { }
@@ -42,7 +42,7 @@ namespace Genetyczny.Model
             }
         }
        
-        public int EstimateScore()
+        public void EstimateScore()
         {
             for (int row = 0; row < allocation.Count; row++)
             {
@@ -51,7 +51,6 @@ namespace Genetyczny.Model
                     estimatedScore += Simulation.GetValueFromDistanceMatrix(row, column)*Simulation.GetValueFromFlowMatrix(allocation.ElementAt(row), allocation.ElementAt(column));
                 }
             }
-            return estimatedScore;
         }
 
         public int GetEstimatedScore()
@@ -81,8 +80,6 @@ namespace Genetyczny.Model
             allocation[randomIndex] = allocation[randomIndexSecond];
             allocation[randomIndexSecond] = temp;
         }
-
-        public void Select() { }
 
         public void Print()
         {
@@ -125,6 +122,15 @@ namespace Genetyczny.Model
             }
 
             return newFacilities;
+        }
+
+        public bool IsListDistinct()
+        {
+            if (allocation.Count != allocation.Distinct().Count())
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
