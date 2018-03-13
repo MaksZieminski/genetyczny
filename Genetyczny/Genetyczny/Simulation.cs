@@ -21,13 +21,10 @@ namespace Genetyczny
             
             ParseMatrixFromFile();
             Population population = new Population(populationCount);
+            population.Start();
             population.PrintSolutions();
             //population.Start();
             
-            Console.WriteLine("Best solution score : " + population.BestSolutionScore());
-            Console.WriteLine("Worst solution score : " + population.WorstSolutionScore());
-            Console.WriteLine("Average solution score : " + population.AverageSolution());
-
             ////DO USUNIECIA
             //Console.WriteLine("Macierz przeplywu");
             //printMatrix(flowMatrix, length);
