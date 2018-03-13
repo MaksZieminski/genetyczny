@@ -92,27 +92,33 @@ namespace Genetyczny.Model
         public void Start()
         {
             Initialize();
-            while (true)
-            {
-                Select(solutions);
-                //Cross(solutions);
+            EstimatePopulationScore();
+            PrintPopulationInfo();
+            //while (true)
+            //{
+
+            while (true) { 
+            CrossSolutions();
+
                 //Mute(solutions);
-                //EstimateScore for population
+                EstimatePopulationScore();
                 PrintPopulationInfo();
+                WriteToCsv();
+                
             }
 
         }
 
         public void PrintPopulationInfo()
         {
-            Console.WriteLine("Best solution score : " + BestSolutionScore());
-            Console.WriteLine("Worst solution score : " + WorstSolutionScore());
-            Console.WriteLine("Average solution score : " + AverageSolution());
+            Console.Write("Best : " + BestSolutionScore());
+            Console.Write("Worst : " + WorstSolutionScore());
+            Console.WriteLine("Average : " + AverageSolution());
         }
 
         public void EstimatePopulationScore()
         {
-            for(int i=0; i < solutions.Count; i++)
+            for (int i=0; i < solutions.Count; i++)
             {
                 solutions[i].EstimateScore();
             }
@@ -121,7 +127,7 @@ namespace Genetyczny.Model
         public void WriteToCsv() {
 
             //before your loop
-            var csv = new StringBuilder();
+            //var csv = new StringBuilder();
 
             ////in your loop
             //var first = reader[0].ToString();
@@ -134,5 +140,19 @@ namespace Genetyczny.Model
             //File.WriteAllText(filePath, csv.ToString());
 
         }
+
+        public void ResetPopulationScore()
+        {
+            solutions.ForEach(s => s.SetEstimatedScore(0));
+        }
+
+        public void CrossSolutions()
+        {
+            for (int i = 0; i + 1 < solutions.Count; i++)
+            {
+                solutions[i].Cross(solutions[i + 1]);
+            }
+        }
+        
     }
 }

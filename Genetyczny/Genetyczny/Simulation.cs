@@ -22,9 +22,7 @@ namespace Genetyczny
             ParseMatrixFromFile();
             Population population = new Population(populationCount);
             population.Start();
-            population.PrintPopulationInfo();
-            population.WriteToCsv();
-            //population.Start();
+
             
             ////DO USUNIECIA
             //Console.WriteLine("Macierz przeplywu");
@@ -109,5 +107,7 @@ namespace Genetyczny
         {
             return distanceMatrix[row, column];
         }
+
+       
     }
 }

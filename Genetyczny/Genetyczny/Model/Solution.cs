@@ -21,7 +21,6 @@ namespace Genetyczny.Model
         public Solution(int nodesCount)
         {
             RandomAllocate(Simulation.matrixDimension);
-            EstimateScore();
         }
 
         public Solution() { }
@@ -44,6 +43,8 @@ namespace Genetyczny.Model
        
         public void EstimateScore()
         {
+            estimatedScore = 0;
+
             for (int row = 0; row < allocation.Count; row++)
             {
                 for (int column = 0; column < allocation.Count; column++)
@@ -67,6 +68,7 @@ namespace Genetyczny.Model
                 allocation[i] = anotherSolution.allocation[allocation.Count - 1 - i];
                 anotherSolution.allocation[allocation.Count - 1 - i] = temp;
             }
+            CorrectAllocations(allocation);
         }
 
         public void Mutation()
@@ -98,30 +100,38 @@ namespace Genetyczny.Model
             }
         }
 
-        private int[] CorrectFacilities(int[] facilities)
+        private List<int> CorrectAllocations(List<int> allocations)
         {
-            int[] newFacilities = new int[facilities.Length];
+            List<int> newAllocations = new List<int>(allocations.Count);
             List<int> list = new List<int>();
+            int pivot = allocations.Count / 2;
 
-            for (int i = 0; i < facilities.Length; i++) { list.Add(i); } //zainicjowanie listy intów od 0 do facilities.Length zeby pozniej z niej wykreslac
-            for (int i = 0; i < facilities.Length; i++)
+            for (int i = 0; i < allocations.Count; i++) { list.Add(i); } //zainicjowanie listy intów od 0 do facilities.Length zeby pozniej z niej wykreslac
+            for (int i = 0; i < allocations.Count; i++)
             {
-                list.Remove(facilities[i]);
+                list.Remove(allocations[i]);
             }
+            for (int i = 0; i < pivot; i++) { newAllocations.Add(allocations[i]); }
 
-            for (int i = 0; i < facilities.Length; i++)
+            bool isDuplicate = false;
+            for (int i = pivot; i < allocations.Count; i++)
             {
-                for (int j = i; j > 0; j--)
+                isDuplicate = false;
+
+                for (int j = i-1; j > 0; j--)
                 {
-                    if (facilities[i] == facilities[j])
+                    if (allocations[i] == allocations[j])
                     {
-                        facilities[i] = list.ElementAt(0);
+                        isDuplicate = true;
+                        newAllocations.Add(list.ElementAt(0));
                         list.RemoveAt(0);
-                    }
+                    }  
                 }
+                if(!isDuplicate)
+                newAllocations.Add(allocations[i]);
             }
 
-            return newFacilities;
+            return newAllocations;
         }
 
         public bool IsListDistinct()
@@ -131,6 +141,11 @@ namespace Genetyczny.Model
                 return false;
             }
             return true;
+        }
+
+        public void SetEstimatedScore(int score)
+        {
+            estimatedScore = score;
         }
     }
 }
