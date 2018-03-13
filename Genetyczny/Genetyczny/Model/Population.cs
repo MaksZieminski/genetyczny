@@ -91,13 +91,13 @@ namespace Genetyczny.Model
 
         public void Start()
         {
-
             Initialize();
             while (true)
             {
                 Select(solutions);
                 //Cross(solutions);
                 //Mute(solutions);
+                //EstimateScore for population
                 PrintPopulationInfo();
             }
 
@@ -108,6 +108,14 @@ namespace Genetyczny.Model
             Console.WriteLine("Best solution score : " + BestSolutionScore());
             Console.WriteLine("Worst solution score : " + WorstSolutionScore());
             Console.WriteLine("Average solution score : " + AverageSolution());
+        }
+
+        public void EstimatePopulationScore()
+        {
+            for(int i=0; i < solutions.Count; i++)
+            {
+                solutions[i].EstimateScore();
+            }
         }
     }
 }
