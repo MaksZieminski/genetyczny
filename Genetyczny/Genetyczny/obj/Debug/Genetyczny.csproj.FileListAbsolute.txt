@@ -5,3 +5,12 @@ c:\users\max\source\repos\Genetyczny\Genetyczny\obj\Debug\Genetyczny.csprojResol
 c:\users\max\source\repos\Genetyczny\Genetyczny\obj\Debug\Genetyczny.csproj.CoreCompileInputs.cache
 c:\users\max\source\repos\Genetyczny\Genetyczny\obj\Debug\Genetyczny.exe
 c:\users\max\source\repos\Genetyczny\Genetyczny\obj\Debug\Genetyczny.pdb
+X:\Genetyczny\Genetyczny\Genetyczny\bin\Debug\Genetyczny.exe.config
+X:\Genetyczny\Genetyczny\Genetyczny\bin\Debug\Genetyczny.exe
+X:\Genetyczny\Genetyczny\Genetyczny\bin\Debug\Genetyczny.pdb
+X:\Genetyczny\Genetyczny\Genetyczny\obj\Debug\Genetyczny.csprojResolveAssemblyReference.cache
+X:\Genetyczny\Genetyczny\Genetyczny\obj\Debug\Genetyczny.csproj.CoreCompileInputs.cache
+X:\Genetyczny\Genetyczny\Genetyczny\obj\Debug\Genetyczny.exe
+X:\Genetyczny\Genetyczny\Genetyczny\obj\Debug\Genetyczny.pdb
+X:\Genetyczny\Genetyczny\Genetyczny\bin\Debug\MathNet.Numerics.dll
+X:\Genetyczny\Genetyczny\Genetyczny\bin\Debug\MathNet.Numerics.xml
