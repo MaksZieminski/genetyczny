@@ -1,44 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Genetyczny.Model
 {
+    [Serializable]
     class Solution
     {
         #region Fields
         private static readonly Random random = new Random();
         private static readonly object syncLock = new object();
+        int solutionId;
 
-        List<int> allocation = new List<int>();
+        public List<int> allocation = new List<int>();
         int estimatedScore = 0;
 
         #endregion
        
         #region Constructors
-        public Solution(int nodesCount)
+        public Solution(Solution solution, int id)
         {
-            RandomAllocate(Simulation.matrixDimension);
+            allocation = new List<int>();
+            allocation = solution.allocation;
+            solutionId = id;
+            EstimateScore();
+        }
+        public Solution(int id)
+        {
+            solutionId = id;
+        }
+        public Solution()
+        {
+        }
+        public Solution(Solution solution)
+        {
+
+            allocation = solution.allocation;
+            solutionId = solution.solutionId;
+            EstimateScore();
         }
 
-        public Solution() { }
         #endregion
 
-        
-        public void RandomAllocate(int nodesCount)
+        #region methods
+        public Solution RandomAllocate(int matrixDimension)
         {
             int randomValue = 0;
-            for(int i=0; i<nodesCount; i++)
+            for(int i=0; i<matrixDimension; i++)
             {
                 do
                 {
-                    randomValue = RandomNumber(0, nodesCount);
+                    randomValue = RandomNumber(0, matrixDimension);
                 }while(allocation.Contains(randomValue));
 
                 allocation.Add(randomValue);
             }
+            EstimateScore();
+            return this;
         }
        
         public void EstimateScore()
@@ -61,26 +81,30 @@ namespace Genetyczny.Model
 
         public void Cross(Solution anotherSolution)
         {
-            int pivot = this.allocation.Count / 2;
+            int pivot = allocation.Count / 2;
             for (int i = 0; i < pivot; i++)
             {
-                int temp = allocation[i];
-                allocation[i] = anotherSolution.allocation[allocation.Count - 1 - i];
-                anotherSolution.allocation[allocation.Count - 1 - i] = temp;
+                allocation[pivot+i] = anotherSolution.allocation[pivot+i];
             }
-            CorrectAllocations(allocation);
+            allocation = CorrectAllocations(allocation);
+            EstimateScore();
         }
 
         public void Mutation()
         {
-            var randomIndex = RandomNumber(0, allocation.Count-1);
+            var randomIndex = RandomNumber(0, allocation.Count);
             var temp = allocation[randomIndex];
-            var randomIndexSecond = 0;
-            while (randomIndexSecond != randomIndex) {
-                RandomNumber(0, allocation.Count - 1);
+            var randomIndexSecond = randomIndex;
+            while (randomIndexSecond == randomIndex) {
+                 randomIndexSecond = RandomNumber(0, allocation.Count);
             }
             allocation[randomIndex] = allocation[randomIndexSecond];
             allocation[randomIndexSecond] = temp;
+            if (!IsListDistinct(allocation))
+            {
+                var a = 5;
+            }
+            EstimateScore();
         }
 
         public void Print()
@@ -102,7 +126,7 @@ namespace Genetyczny.Model
 
         private List<int> CorrectAllocations(List<int> allocations)
         {
-            List<int> newAllocations = new List<int>(allocations.Count);
+            List<int> correctAllocations = new List<int>(allocations.Count);
             List<int> list = new List<int>();
             int pivot = allocations.Count / 2;
 
@@ -111,32 +135,32 @@ namespace Genetyczny.Model
             {
                 list.Remove(allocations[i]);
             }
-            for (int i = 0; i < pivot; i++) { newAllocations.Add(allocations[i]); }
+            for (int i = 0; i < pivot; i++)
+            { correctAllocations.Add(allocations[i]); }
 
             bool isDuplicate = false;
             for (int i = pivot; i < allocations.Count; i++)
             {
                 isDuplicate = false;
 
-                for (int j = i-1; j > 0; j--)
+                for (int j = i - 1; j >= 0; j--)
                 {
                     if (allocations[i] == allocations[j])
                     {
                         isDuplicate = true;
-                        newAllocations.Add(list.ElementAt(0));
+                        correctAllocations.Add(list.ElementAt(0));
                         list.RemoveAt(0);
-                    }  
+                    }
                 }
-                if(!isDuplicate)
-                newAllocations.Add(allocations[i]);
+                if (!isDuplicate)
+                    correctAllocations.Add(allocations[i]);
             }
-
-            return newAllocations;
+            return correctAllocations;
         }
 
-        public bool IsListDistinct()
+        public bool IsListDistinct(List<int> list)
         {
-            if (allocation.Count != allocation.Distinct().Count())
+            if (list.Count != list.Distinct().Count())
             {
                 return false;
             }
@@ -147,5 +171,39 @@ namespace Genetyczny.Model
         {
             estimatedScore = score;
         }
+
+        public void SetId(int id)
+        {
+            solutionId = id;
+        }
+
+        public int GetId()
+        {
+            return solutionId;
+        }
+
+        public Solution Copy() {
+
+            Solution newSolution = new Solution();
+            newSolution.allocation = this.allocation;
+            newSolution.estimatedScore = this.estimatedScore;
+            newSolution.SetId(this.GetId());
+            return newSolution;
+
+        }
+
+        
+        public static T DeepClone<T>(T obj)
+        {
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(ms, obj);
+                ms.Position = 0;
+
+                return (T)formatter.Deserialize(ms);
+            }
+        }
+        #endregion
     }
 }

@@ -4,43 +4,82 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Genetyczny
 {
     class Simulation
     {
-
+        #region fields
         public static readonly int populationCount = 100;
+        public static readonly string matrixFileName = "matrix1.txt";
         public static int[,] flowMatrix;
         public static int[,] distanceMatrix;
         public static int matrixDimension = 0;
         
+        #endregion
+
+
         static void Main(string[] args)
         {
-            
+            var csv = new StringBuilder();
             ParseMatrixFromFile();
             Population population = new Population(populationCount);
-            population.Start();
+            population.Initialize();
+            population.PrintPopulationInfo();
 
-            
-            ////DO USUNIECIA
-            //Console.WriteLine("Macierz przeplywu");
-            //printMatrix(flowMatrix, length);
-            //Console.WriteLine("Macierz dystansu");
-            //printMatrix(distanceMatrix, length);
-            ////DO USUNIECIA
+            using (var w = new StreamWriter("zupelnieNoweRozwiazani3334444444444444444444.csv"))
+            {
+                while (population.BestSolutionScore() > 1653)
+                {
+                    Population newPopulation = new Population();
+                    for (int i = 0; i < populationCount; i++)
+                    {
+                        int selectedId = population.SelectSolution();
+                        Solution newSolution = new Solution(i + 1);
+                        newSolution = Solution.DeepClone<Solution>(population.solutions.ElementAt(selectedId));
+
+                        int randomNumber = Solution.RandomNumber(0, 100);
+                        if (!(newSolution.GetEstimatedScore() == population.BestSolutionScore()))
+                            {
+                            if (randomNumber < population.crossChancePercentage)
+                            {
+                                Solution crossSolution = Solution.DeepClone<Solution>(population.solutions[population.SelectSolution()]);
+                                if (crossSolution.GetEstimatedScore() != newSolution.GetEstimatedScore())
+                                    newSolution.Cross(crossSolution);
+
+                            }
+                           
+                        }
+                        if (randomNumber < population.mutationChancePercentage)
+                        {
+                            newSolution.Mutation();
+                        }
+                        newSolution.SetId(i + 1);
+                        newPopulation.solutions.Add(newSolution);
+
+                    }
 
 
-            Boolean breakpoint = true;
-            
+                    newPopulation.generation = population.generation + 1;
+                    population = newPopulation;
+                    population.PrintPopulationInfo();
+                    //population.WriteToCsv();
+
+                    ////DO USUNIECIA
+                    // PrintFlowAndDistanceMatrix();
+                    var line = string.Format("{0}ss{1}",  population.BestSolutionScore(), population.generation);
+                    w.WriteLine(line);
+                    w.Flush();
+                    
+                }
+                }
         }
 
         public static void ParseMatrixFromFile()
         {
             try
             {
-                using (StreamReader sr = new StreamReader("matrix.txt"))
+                using (StreamReader sr = new StreamReader(matrixFileName))
                 {
                     String line = sr.ReadToEnd().Replace("  ", "").Replace("<", "").Replace(">", "").Replace("\r","");
                     var parts = line.Split('\n').ToList<string>();
@@ -86,7 +125,7 @@ namespace Genetyczny
             }
         }
 
-        public static void printMatrix(int[,] matrix, int length)
+        public static void PrintMatrix(int[,] matrix, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -108,6 +147,14 @@ namespace Genetyczny
             return distanceMatrix[row, column];
         }
 
-       
+        public static void PrintFlowAndDistanceMatrix()
+        {
+            Console.WriteLine("Macierz przeplywu");
+            PrintMatrix(flowMatrix, matrixDimension);
+            Console.WriteLine("Macierz dystansu");
+            PrintMatrix(distanceMatrix, matrixDimension);
+        }
+
+
     }
 }

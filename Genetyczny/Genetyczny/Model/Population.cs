@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Genetyczny.Model
 {
@@ -10,9 +9,12 @@ namespace Genetyczny.Model
     {
 
         #region fields
+        public double crossChancePercentage = 55;
+        public double mutationChancePercentage = 3;
         public List<Solution> solutions = new List<Solution>();
         int populationCount = 0;
-        int generation = 0;
+        public int generation = 0;
+
         #endregion
 
         #region Constructors
@@ -20,9 +22,13 @@ namespace Genetyczny.Model
         {
             this.populationCount = populationCount;
         }
+
+        public Population()
+        {
+        }
         #endregion
 
-
+        #region Methods
         public int Count()
         {
             return populationCount;
@@ -30,13 +36,14 @@ namespace Genetyczny.Model
 
         public void Initialize()
         {
-
+            generation = 1;
             for (int i = 0; i < populationCount; i++)
             {
-                solutions.Add(new Solution(populationCount));
+                solutions.Add(new Solution(i + 1).RandomAllocate(Simulation.matrixDimension));
             }
+            EstimatePopulationScore();
         }
-        
+
         public double AverageSolution()
         {
             double averageScore = 0;
@@ -79,65 +86,38 @@ namespace Genetyczny.Model
             int counter = 1;
             foreach (Solution solution in solutions)
             {
-               // Console.WriteLine("Solution[" + counter + "]. Score : " + solution.GetEstimatedScore());
+                // Console.WriteLine("Solution[" + counter + "]. Score : " + solution.GetEstimatedScore());
                 solution.Print();
                 Console.WriteLine("");
                 counter++;
-            }
-            
-        }
-
-        public void Select(List<Solution> population) { }
-
-        public void Start()
-        {
-            Initialize();
-            EstimatePopulationScore();
-            PrintPopulationInfo();
-            //while (true)
-            //{
-
-            while (true) { 
-            CrossSolutions();
-
-                //Mute(solutions);
-                EstimatePopulationScore();
-                PrintPopulationInfo();
-                WriteToCsv();
-                
             }
 
         }
 
         public void PrintPopulationInfo()
         {
-            Console.Write("Best : " + BestSolutionScore());
-            Console.Write("Worst : " + WorstSolutionScore());
-            Console.WriteLine("Average : " + AverageSolution());
+            Console.WriteLine("Generation:" + generation);
+            Console.Write("Best:" + BestSolutionScore());
+            Console.Write(";Worst:" + WorstSolutionScore());
+            Console.WriteLine(";Average:" + AverageSolution());
         }
 
         public void EstimatePopulationScore()
         {
-            for (int i=0; i < solutions.Count; i++)
+            for (int i = 0; i < solutions.Count; i++)
             {
                 solutions[i].EstimateScore();
             }
         }
 
         public void WriteToCsv() {
-
-            //before your loop
-            //var csv = new StringBuilder();
-
-            ////in your loop
-            //var first = reader[0].ToString();
-            //var second = image.ToString();
-            ////Suggestion made by KyleMit
-            //var newLine = string.Format("{0},{1}", first, second);
-            //csv.AppendLine(newLine);
-
-            ////after your loop
-            //File.WriteAllText(filePath, csv.ToString());
+            using (var w = new StreamWriter("results3.csv"))
+            {
+                    var line = string.Format("{0},{1}", generation, BestSolutionScore());
+                    w.WriteLine(line);
+                    w.Flush();
+                
+            }
 
         }
 
@@ -146,13 +126,50 @@ namespace Genetyczny.Model
             solutions.ForEach(s => s.SetEstimatedScore(0));
         }
 
-        public void CrossSolutions()
+        public int SelectSolution()
         {
-            for (int i = 0; i + 1 < solutions.Count; i++)
+            List<int> idSolutions = new List<int>();
+            foreach (Solution s in solutions)
             {
-                solutions[i].Cross(solutions[i + 1]);
+                int averageScore = BestSolutionScore();
+                for (int i = averageScore * 2; i > s.GetEstimatedScore(); i--)
+                {
+                    idSolutions.Add(s.GetId());
+                }
+            }
+            int random = Solution.RandomNumber(0, idSolutions.Count);
+            int id = idSolutions.ElementAt(random);
+
+            return id - 1;
+
+        }
+
+        public int SelectSolutionByTournament()
+        {
+            List<Solution> listOfSolution = new List<Solution>();
+            List<int> listOfNumbers = new List<int>();
+
+            for (int i = 0; i < 10; i++)
+            {
+                int randomId = Solution.RandomNumber(0, 100);
+                while (listOfNumbers.Contains(randomId))
+                {
+                    listOfNumbers.Add(randomId);
+                }
             }
         }
-        
+        public bool AreSolutionsDistinct()
+        {
+            bool oby = true;
+            for (int i = 0; i < solutions.Count; i++)
+            {
+                if (!solutions[i].IsListDistinct(solutions[i].allocation))
+                {
+                    oby = false;
+                }
+            }
+            return oby;
+        }
+        #endregion
     }
 }
