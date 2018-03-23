@@ -9,10 +9,9 @@ namespace Genetyczny.Model
     {
 
         #region fields
-        public double crossChancePercentage = 55;
-        public double mutationChancePercentage = 3;
-        public List<Solution> solutions = new List<Solution>();
-        int populationCount = 0;
+        public double crossChancePercentage = 75;
+        public double mutationChancePercentage = 4;
+        public readonly List<Solution> solutions = new List<Solution>(100);
         public int generation = 0;
 
         #endregion
@@ -20,7 +19,7 @@ namespace Genetyczny.Model
         #region Constructors
         public Population(int populationCount)
         {
-            this.populationCount = populationCount;
+            Initialize(populationCount);
         }
 
         public Population()
@@ -29,12 +28,9 @@ namespace Genetyczny.Model
         #endregion
 
         #region Methods
-        public int Count()
-        {
-            return populationCount;
-        }
+       
 
-        public void Initialize()
+        public void Initialize(int populationCount)
         {
             generation = 1;
             for (int i = 0; i < populationCount; i++)
@@ -144,20 +140,34 @@ namespace Genetyczny.Model
 
         }
 
-        public int SelectSolutionByTournament()
+        public Solution SelectSolutionByTournament()
         {
-            List<Solution> listOfSolution = new List<Solution>();
-            List<int> listOfNumbers = new List<int>();
+            List<int> selectedIds = new List<int>();
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 5; i++)
             {
                 int randomId = Solution.RandomNumber(0, 100);
-                while (listOfNumbers.Contains(randomId))
+                while (!selectedIds.Contains(randomId))
                 {
-                    listOfNumbers.Add(randomId);
+                    selectedIds.Add(randomId);
                 }
             }
+
+            int bestSolution = int.MaxValue;
+            int bestSolutionId = -1;
+
+            foreach (int i in selectedIds)
+            {
+                if(bestSolution > solutions[i].GetEstimatedScore())
+                {
+                    bestSolution = solutions[i].GetEstimatedScore();
+                    bestSolutionId = i;
+                }
+            }
+            
+            return solutions[bestSolutionId];
         }
+
         public bool AreSolutionsDistinct()
         {
             bool oby = true;

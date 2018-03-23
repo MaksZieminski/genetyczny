@@ -100,10 +100,7 @@ namespace Genetyczny.Model
             }
             allocation[randomIndex] = allocation[randomIndexSecond];
             allocation[randomIndexSecond] = temp;
-            if (!IsListDistinct(allocation))
-            {
-                var a = 5;
-            }
+
             EstimateScore();
         }
 

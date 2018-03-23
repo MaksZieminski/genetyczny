@@ -11,57 +11,59 @@ namespace Genetyczny
     {
         #region fields
         public static readonly int populationCount = 100;
-        public static readonly string matrixFileName = "matrix1.txt";
+        public static readonly string matrixFileName = "matrix2.txt";
         public static int[,] flowMatrix;
         public static int[,] distanceMatrix;
         public static int matrixDimension = 0;
-        
+
         #endregion
 
-
+        #region methods
         static void Main(string[] args)
         {
             var csv = new StringBuilder();
             ParseMatrixFromFile();
             Population population = new Population(populationCount);
-            population.Initialize();
             population.PrintPopulationInfo();
+            
 
-            using (var w = new StreamWriter("zupelnieNoweRozwiazani3334444444444444444444.csv"))
+            using (var w = new StreamWriter("ruletkaNowa.csv"))
             {
-                while (population.BestSolutionScore() > 1653)
+                while (population.generation < 100)
                 {
                     Population newPopulation = new Population();
-                    for (int i = 0; i < populationCount; i++)
+                    for (int i = 1; i < population.solutions.Count+1; i++)
                     {
-                        int selectedId = population.SelectSolution();
-                        Solution newSolution = new Solution(i + 1);
-                        newSolution = Solution.DeepClone<Solution>(population.solutions.ElementAt(selectedId));
+                        Solution newSolution = new Solution();
+                        //newSolution = Solution.DeepClone<Solution>(population.SelectSolutionByTournament());
+                        newSolution = Solution.DeepClone<Solution>(population.solutions[population.SelectSolution()]);
 
                         int randomNumber = Solution.RandomNumber(0, 100);
                         if (!(newSolution.GetEstimatedScore() == population.BestSolutionScore()))
-                            {
+                        {
                             if (randomNumber < population.crossChancePercentage)
                             {
-                                Solution crossSolution = Solution.DeepClone<Solution>(population.solutions[population.SelectSolution()]);
-                                if (crossSolution.GetEstimatedScore() != newSolution.GetEstimatedScore())
-                                    newSolution.Cross(crossSolution);
+                                Solution partner = new Solution();
+                                 partner=     Solution.DeepClone<Solution>(population.solutions[population.SelectSolution()]);
+                                if (partner.GetEstimatedScore() != newSolution.GetEstimatedScore())
+                                    newSolution.Cross(partner);
 
                             }
-                           
+                            
+                            
+                        
                         }
                         if (randomNumber < population.mutationChancePercentage)
                         {
                             newSolution.Mutation();
                         }
-                        newSolution.SetId(i + 1);
+                        newSolution.SetId(i);
                         newPopulation.solutions.Add(newSolution);
-
                     }
-
-
+                    
                     newPopulation.generation = population.generation + 1;
                     population = newPopulation;
+                    population.EstimatePopulationScore();
                     population.PrintPopulationInfo();
                     //population.WriteToCsv();
 
@@ -154,7 +156,7 @@ namespace Genetyczny
             Console.WriteLine("Macierz dystansu");
             PrintMatrix(distanceMatrix, matrixDimension);
         }
-
+        #endregion methods
 
     }
 }
